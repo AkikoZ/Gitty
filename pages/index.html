@@ -42,7 +42,7 @@
       <div class="field" v-for="(repo, index) in currentRepos">
         <div class="control columns is-mobile">
           <span class="column is-three-quarters">{{repo.name}}</span>
-          <span class="column"><a :class="['button', index == curDirIndex ? 'is-danger' : 'is-info']" v-on:click="enterRepos(index)">{{index == curDirIndex ? 'NowIn' : 'Enter'}}</a></span>
+          <span class="column"><a :class="['button', index == curDirIndex ? 'is-success' : 'is-info']" v-on:click="enterRepos(index)">{{index == curDirIndex ? 'NowIn' : 'Enter'}}</a></span>
         </div>
       </div>
       <a class="button is-info is-large add-border" v-on:click="addFromLocal"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;&nbsp;Add a Repo from Local</a>
@@ -59,7 +59,7 @@
       </div>
       <div class="control columns is-mobile">
         <span class="column is-three-quarters"></span>
-        <span class="column"><a class="button is-info is-large add-border" v-on:click="showAllRemotes = !showAllRemotes"><i :class="['fa', showAllRemotes ? 'fa-minus-square' : 'fa-plus-square']" aria-hidden="true"></i></a></span>
+        <span class="column"><a class="button is-info is-small add-border" v-on:click="showAllRemotes = !showAllRemotes">{{showAllRemotes ? 'Fold' : 'Expand'}}&nbsp;<i :class="['fa', showAllRemotes ? 'fa-chevron-circle-up' : 'fa-chevron-circle-down']" aria-hidden="true"></i></a></span>
       </div>
     </div>
   </section>
