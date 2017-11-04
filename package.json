@@ -10,9 +10,11 @@
   },
   "main": "main.js",
   "scripts": {
-    "start": "./node_modules/.bin/electron ."
+    "start": "./node_modules/.bin/electron .",
+    "rebuild": "./node_modules/.bin/electron-rebuild"
   },
   "devDependencies": {
-    "electron": "~1.7.9"
+    "electron": "~1.7.9",
+    "electron-rebuild": "^1.6.0"
   }
 }

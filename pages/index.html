@@ -71,7 +71,7 @@
       },
       methods: {
         addFromLocal() {
-          ipcRenderer.send('add-repo-from-local')
+          ipcRenderer.send('add-local')
         },
         enterRepos(index) {
           console.log(index)
@@ -79,7 +79,7 @@
         },
         cloneRepos(index) {
           let data = this.remoteRepos[index]
-          ipcRenderer.send('clone-repo-from-local', data)
+          ipcRenderer.send('clone', data)
         },
         recordAudio() {
           if (!this.isRecord) {
@@ -96,7 +96,7 @@
         }
       },
       created() {
-        ipcRenderer.on('reply-repo-from-local', (evt, otherData) => {
+        ipcRenderer.on('selected-local', (evt, otherData) => {
             // TODO
             this.currentRepos.push({
               name: otherData.name,
