@@ -6,6 +6,8 @@
     <title>Hello Gitty!</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
+    <link rel="stylesheet" href="../lib/animate.min.css">
+    <link rel="stylesheet" href="../lib/chatstyle.css">
   </head>
   <style type="text/css">
     [v-cloak] {
@@ -20,37 +22,42 @@
     .container-new {
       margin-bottom: 20px;
       padding: 10px;
-      border: 1px solid #cccccc;
     }
   </style>
   <body>
   <section class="section" id="app" v-cloak>
-    <div class="container icon-title">
+    <div class="container icon-title animated pulse">
       <img src="../assets/img/recorder.png" width="200" height="200" v-on:click="recordAudio">
     </div>
     <div class="right-text">{{username}}</div>
-    <div class="container container-new">
+    <div class="container container-new is-warning animated bounceInUp">
+      <ul class="chat-thread" v-if="messageList.length">
+        <li v-for="message in messageList">{{message}}</li>
+      </ul>
+    </div>
+    <div class="container container-new notification is-primary animated bounceInUp">
       <h2 class="title is-small">
         Repo List
       </h2>
       <div class="field" v-for="(repo, index) in currentRepos">
-        <div class="control">
-          <span>{{repo.name}}</span>
-          <span><a class="button is-info" v-on:click="enterRepos(index)">Enter</a></span>
+        <div class="control columns">
+          <span class="column is-three-quarters">{{repo.name}}</span>
+          <span class="column"><a class="button is-info" v-on:click="enterRepos(index)">Enter</a></span>
         </div>
       </div>
       <a class="button is-info is-large add-border" v-on:click="addFromLocal"><i class="fa fa-plus-square" aria-hidden="true"></i>Add a Repo from Local File System</a>
     </div>
-    <div class="container container-new">
+    <div class="container container-new notification is-primary animated bounceInUp">
       <h2 class="title is-small">
         Clone Remote Repos
       </h2>
       <div class="field" v-for="(repo, index) in remoteRepos">
-        <div class="control">
-          <span>{{repo.name}}</span>
-          <span><a class="button is-warning" v-on:click="cloneRepos(index)">Clone</a></span>
+        <div class="control columns" v-if="!(!showAllRemotes && index > 4)">
+          <span class="column is-three-quarters">{{repo.name}}</span>
+          <span class="column"><a class="button is-warning" v-on:click="cloneRepos(index)">Clone</a></span>
         </div>
       </div>
+      <a class="button is-info is-large add-border" v-on:click="showAllRemotes = !showAllRemotes"><i :class="['fa', showAllRemotes ? 'fa-minus-square' : 'fa-plus-square']" aria-hidden="true"></i>{{showAllRemotes ? 'Fold' : 'Expand'}}</a>
     </div>
   </section>
   </body>
@@ -67,7 +74,9 @@
         isRecord: false,
         remoteRepos: [],
         currentRepos: [],
-        audioObj: {}
+        messageList: [],
+        audioObj: {},
+        showAllRemotes: false
       },
       methods: {
         addFromLocal() {
