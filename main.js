@@ -141,8 +141,8 @@ ipc.on('push', (event, data) => {
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600
+        width: 450,
+        height: 750
     });
 
     mainWindow.loadURL(url.format({

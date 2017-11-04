@@ -40,24 +40,27 @@
         Repo List
       </h2>
       <div class="field" v-for="(repo, index) in currentRepos">
-        <div class="control columns">
+        <div class="control columns is-mobile">
           <span class="column is-three-quarters">{{repo.name}}</span>
-          <span class="column"><a class="button is-info" v-on:click="enterRepos(index)">Enter</a></span>
+          <span class="column"><a :class="['button', index == curDirIndex ? 'is-danger' : 'is-info']" v-on:click="enterRepos(index)">{{index == curDirIndex ? 'NowIn' : 'Enter'}}</a></span>
         </div>
       </div>
-      <a class="button is-info is-large add-border" v-on:click="addFromLocal"><i class="fa fa-plus-square" aria-hidden="true"></i>Add a Repo from Local File System</a>
+      <a class="button is-info is-large add-border" v-on:click="addFromLocal"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;&nbsp;Add a Repo from Local</a>
     </div>
     <div class="container container-new notification is-primary animated bounceInUp">
       <h2 class="title is-small">
         Clone Remote Repos
       </h2>
       <div class="field" v-for="(repo, index) in remoteRepos">
-        <div class="control columns" v-if="!(!showAllRemotes && index > 4)">
+        <div class="control columns is-mobile" v-if="!(!showAllRemotes && index > 4)">
           <span class="column is-three-quarters">{{repo.name}}</span>
           <span class="column"><a class="button is-warning" v-on:click="cloneRepos(index)">Clone</a></span>
         </div>
       </div>
-      <a class="button is-info is-large add-border" v-on:click="showAllRemotes = !showAllRemotes"><i :class="['fa', showAllRemotes ? 'fa-minus-square' : 'fa-plus-square']" aria-hidden="true"></i>{{showAllRemotes ? 'Fold' : 'Expand'}}</a>
+      <div class="control columns is-mobile">
+        <span class="column is-three-quarters"></span>
+        <span class="column"><a class="button is-info is-large add-border" v-on:click="showAllRemotes = !showAllRemotes"><i :class="['fa', showAllRemotes ? 'fa-minus-square' : 'fa-plus-square']" aria-hidden="true"></i></a></span>
+      </div>
     </div>
   </section>
   </body>
@@ -76,6 +79,8 @@
         currentRepos: [],
         messageList: [],
         audioObj: {},
+        curDirIndex: -1,
+        curDirObj: {},
         showAllRemotes: false
       },
       methods: {
@@ -83,8 +88,11 @@
           ipcRenderer.send('add-local')
         },
         enterRepos(index) {
-          console.log(index)
-          // TODO
+          if (this.curDirIndex === index) {
+            return
+          }
+          this.curDirIndex = index
+          this.curDirObj = this.currentRepos[index]
         },
         cloneRepos(index) {
           let data = this.remoteRepos[index]

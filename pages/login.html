@@ -17,6 +17,9 @@
     .icon-title {
       border-radius: 50px;
     }
+    .large-bottom {
+      margin-bottom: 30px !important;
+    }
   </style>
   <body>
   <section class="section" id="app" v-cloak>
@@ -25,12 +28,12 @@
       <h1 class="title is-large">
         Gitty
       </h1>
-      <div class="field">
+      <div class="field large-bottom">
         <div class="control">
           <input class="input is-large" type="text" placeholder="Username" v-model="username">
         </div>
       </div>
-      <div class="field">
+      <div class="field large-bottom">
         <div class="control">
           <input class="input is-large" type="password" placeholder="Password" v-model="password">
         </div>
