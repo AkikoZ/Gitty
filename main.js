@@ -33,7 +33,7 @@ function createWindow() {
     mainWindow.loadURL(url.format({
         protocol: 'file:',
         slashes: true,
-        pathname: path.join(__dirname, 'index.html')
+        pathname: path.join(__dirname, '/pages/login.html')
     }));
 
     mainWindow.on('closed', () => {

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Gitty!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
+  </head>
+  <style type="text/css">
+    * {
+      text-align: center;
+    }
+    [v-cloak] {
+      display: none;
+    }
+    .icon-title {
+      border-radius: 50px;
+    }
+  </style>
+  <body>
+  <section class="section" id="app" v-cloak>
+    <div class="container">
+      <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1509731325218&di=242f8a027b027cd135093df40d70b972&imgtype=0&src=http%3A%2F%2Fi1.hdslb.com%2Fbfs%2Fface%2Fcc422aa08e1dbac13511675bdaa102bdea722c5a.jpg" class="icon-title" width="100" height="100">
+      <h1 class="title is-large">
+        Gitty
+      </h1>
+      <div class="field">
+        <div class="control">
+          <input class="input is-large" type="text" placeholder="Username" v-model="username">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input class="input is-large" type="password" placeholder="Password" v-model="password">
+        </div>
+      </div>
+      <a class="button is-info is-large" v-on:click="submit">Submit</a>
+    </div>
+  </section>
+  </body>
+  <script src="../lib/axios.min.js"></script>
+  <script src="../lib/vue.min.js"></script>
+  <script type="text/javascript">
+    new Vue({
+      el:'#app',
+      data: {
+        username: '',
+        password: ''
+      },
+      methods: {
+        submit() {
+          let data = {
+            username: this.username,
+            password: this.password
+          }
+
+          // TODO
+          // axios.post('/post/server', JSON.parse(data))
+          //   .then((res) => {
+          //     localStorage.setItem('username', this.username)
+          //     localStorage.setItem('password', this.password)
+          //     window.location.href = 'index.html'
+          //   })
+          //   .catch((err) => {
+          //     alert(err);
+          //   });
+
+          localStorage.setItem('username', this.username)
+          localStorage.setItem('password', this.password)
+          window.location.href = 'index.html'
+        }
+      }
+    });
+  </script>
+</html>

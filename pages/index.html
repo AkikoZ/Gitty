@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Gitty!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
+  </head>
+  <style type="text/css">
+    [v-cloak] {
+      display: none;
+    }
+    .icon-title {
+      text-align: center;
+    }
+    .right-text {
+      text-align: right
+    }
+    .container-new {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #cccccc;
+    }
+  </style>
+  <body>
+  <section class="section" id="app" v-cloak>
+    <div class="container icon-title">
+      <img src="../assets/img/recorder.png" width="200" height="200" v-on:click="recordAudio">
+    </div>
+    <div class="right-text">{{username}}</div>
+    <div class="container container-new">
+      <h2 class="title is-small">
+        Repo List
+      </h2>
+      <div class="field" v-for="(repo, index) in currentRepos">
+        <div class="control">
+          <span>{{repo.name}}</span>
+          <span><a class="button is-info" v-on:click="enterRepos(index)">Enter</a></span>
+        </div>
+      </div>
+      <a class="button is-info is-large add-border" v-on:click="addFromLocal"><i class="fa fa-plus-square" aria-hidden="true"></i>Add a Repo from Local File System</a>
+    </div>
+    <div class="container container-new">
+      <h2 class="title is-small">
+        Clone Remote Repos
+      </h2>
+      <div class="field" v-for="(repo, index) in remoteRepos">
+        <div class="control">
+          <span>{{repo.name}}</span>
+          <span><a class="button is-warning" v-on:click="cloneRepos(index)">Clone</a></span>
+        </div>
+      </div>
+    </div>
+  </section>
+  </body>
+  <script src="../lib/mediaUtils.js"></script>
+  <script src="../lib/axios.min.js"></script>
+  <script src="../lib/vue.min.js"></script>
+  <script type="text/javascript">
+    const {ipcRenderer} = require('electron')
+    const GET_REPOS = 'https://api.github.com/users/'
+    new Vue({
+      el:'#app',
+      data: {
+        username: localStorage.getItem('username') || 'pdd',
+        isRecord: false,
+        remoteRepos: [],
+        currentRepos: [],
+        audioObj: {}
+      },
+      methods: {
+        addFromLocal() {
+          ipcRenderer.send('add-repo-from-local')
+        },
+        enterRepos(index) {
+          console.log(index)
+          // TODO
+        },
+        cloneRepos(index) {
+          let data = this.remoteRepos[index]
+          ipcRenderer.send('clone-repo-from-local', data)
+        },
+        recordAudio() {
+          if (!this.isRecord) {
+            startRecord(true)
+            this.isRecord = true
+          }
+          else {
+            stopRecord(() => {
+                // 播放
+                this.audioObj = playRecord()
+            });
+          }
+          
+        }
+      },
+      created() {
+        ipcRenderer.on('reply-repo-from-local', (evt, otherData) => {
+            // TODO
+            this.currentRepos.push({
+              name: otherData.name,
+              path: otherData.path
+            })
+        })
+        axios.get(GET_REPOS + this.username + '/repos')
+          .then((res) => {
+            this.remoteRepos = res.data
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      }
+    });
+  </script>
+</html>
