@@ -13,10 +13,11 @@
     "start": "./node_modules/.bin/electron .",
     "rebuild": "./node_modules/.bin/electron-rebuild"
   },
-  "devDependencies": {
-    "arraybuffer-to-buffer": "0.0.4",
-    "electron": "~1.7.9",
-    "electron-rebuild": "^1.6.0",
+  "dependencies": {
     "watson-developer-cloud": "^2.42.0"
+  },
+  "devDependencies": {
+    "electron": "~1.7.9",
+    "electron-rebuild": "^1.6.0"
   }
 }

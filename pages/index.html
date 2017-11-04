@@ -37,7 +37,7 @@
     </div>
     <div class="container container-new notification is-primary animated bounceInUp">
       <h2 class="title is-small">
-        Repo List
+        Local Repos
       </h2>
       <div class="field" v-for="(repo, index) in currentRepos">
         <div class="control columns is-mobile">
@@ -49,7 +49,7 @@
     </div>
     <div class="container container-new notification is-primary animated bounceInUp">
       <h2 class="title is-small">
-        Clone Remote Repos
+        Remote Repos
       </h2>
       <div class="field" v-for="(repo, index) in remoteRepos">
         <div class="control columns is-mobile" v-if="!(!showAllRemotes && index > 4)">
@@ -162,34 +162,29 @@
         ipcRenderer.on('clone-fail', (evt, otherData) => {
             this.messageList.push('clone failed!')
         })
-        ipcRenderer.on('fetch-success', (evt, otherData) => {
-            this.messageList.push('fetch success!')
-        })
-        ipcRenderer.on('fetch-fail', (evt, otherData) => {
-            this.messageList.push('fetch success!')
-        })
         ipcRenderer.on('pull-success', (evt, otherData) => {
-            this.messageList.push('pull success!')
+            this.messageList.push('pull succeeded!')
         })
         ipcRenderer.on('pull-fail', (evt, otherData) => {
-            this.messageList.push('pull success!')
+            this.messageList.push('pull failed!')
         })
         ipcRenderer.on('push-success', (evt, otherData) => {
-            this.messageList.push('push success!')
+            this.messageList.push('push succeeded!')
         })
         ipcRenderer.on('push-fail', (evt, otherData) => {
-            this.messageList.push('push success!')
+            this.messageList.push('push failed!')
         })
         ipcRenderer.on('commit-success', (evt, otherData) => {
-            this.messageList.push('commit success!')
+            this.messageList.push('commit succeeded!')
         })
         ipcRenderer.on('commit-fail', (evt, otherData) => {
-            this.messageList.push('commit success!')
+            this.messageList.push('commit failed!')
         })
         ipcRenderer.on('selected-local', (evt, otherData) => {
             this.currentRepos.push({
               name: otherData.name,
-              path: otherData.path
+              path: otherData.path,
+              url: otherData.url
             })
         })
         axios.get(GET_REPOS + this.username + '/repos')

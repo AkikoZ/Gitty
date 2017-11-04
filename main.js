@@ -37,9 +37,21 @@ ipc.on('add-local', event => {
     dialog.showOpenDialog({
         properties: ['openDirectory']
     }, function (dir) {
-        if (dir) event.sender.send('selected-local', {
-            name: path.basename(dir[0]),
-            path: dir[0]
+        if (!dir) return;
+        git('get-remote-url', {
+            path: dir
+        }, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+            event.sender.send('selected-local', {
+                name: path.basename(dir[0]),
+                path: dir[0],
+                url: stdout
+            });
         });
     });
 });
@@ -66,6 +78,7 @@ ipc.on('clone', (event, data) => {
     dialog.showOpenDialog({
         properties: ['openDirectory']
     }, function (dir) {
+        if (!dir) return;
         git('clone', {
             path: dir[0],
             url: data.clone_url
@@ -80,26 +93,10 @@ ipc.on('clone', (event, data) => {
             event.sender.send('clone-success');
             event.sender.send('selected-local', {
                 name: data.name,
-                path: path.join(dir[0], data.name)
+                path: path.join(dir[0], data.name),
+                url: data.clone_url
             });
         });
-    });
-});
-
-ipc.on('fetch', (event, data) => {
-    console.log(data);
-    git('fetch', {
-        path: data.path,
-        url: data.url
-    }, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`exec error: ${error}`);
-            event.sender.send('fetch-fail');
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
-        console.log(`stderr: ${stderr}`);
-        event.sender.send('fetch-success');
     });
 });
 
