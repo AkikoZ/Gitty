@@ -14,7 +14,9 @@
     "rebuild": "./node_modules/.bin/electron-rebuild"
   },
   "devDependencies": {
+    "arraybuffer-to-buffer": "0.0.4",
     "electron": "~1.7.9",
-    "electron-rebuild": "^1.6.0"
+    "electron-rebuild": "^1.6.0",
+    "watson-developer-cloud": "^2.42.0"
   }
 }

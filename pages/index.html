@@ -27,7 +27,7 @@
   <body>
   <section class="section" id="app" v-cloak>
     <div class="container icon-title animated pulse">
-      <img src="../assets/img/recorder.png" width="200" height="200" v-on:click="recordAudio">
+      <img src="../assets/img/octoface.svg" width="200" height="200" v-on:click="recordAudio">
     </div>
     <div class="right-text">{{username}}</div>
     <div class="container container-new is-warning animated bounceInUp">
@@ -69,7 +69,18 @@
   <script src="../lib/vue.min.js"></script>
   <script type="text/javascript">
     const {ipcRenderer} = require('electron')
+    const SpeechSDK = require('../lib/speechsdk.js')
+    const Buffer = require('buffer').Buffer;
+    const fs = require('fs')
+    const stream = require('stream');
     const GET_REPOS = 'https://api.github.com/users/'
+    let sdk = new SpeechSDK()
+    let fileReader = new FileReader()
+
+    // fileReader.onload = function() {
+    //   fs.writeFileSync('test.wav', Buffer.from(new Uint8Array(this.result)));
+    // };
+
     new Vue({
       el:'#app',
       data: {
@@ -101,13 +112,44 @@
         },
         recordAudio() {
           if (!this.isRecord) {
-            startRecord(true)
+            startRecord(false)
             this.isRecord = true
           }
           else {
             stopRecord(() => {
                 // 播放
+                fileReader.onloadend = (e) => {
+                  let data = Buffer.from(fileReader.result)
+                  let bufferStream = new stream.PassThrough();
+                  bufferStream.end(data)
+                  let params = {
+                    audio: bufferStream, // 文件
+                    content_type: 'audio/webm' // 文件类
+                  };
+                  sdk.Speech2TextSDK.recognize(params).then((data) => {
+                    data = data.results
+                    let word = data[0] ? data[0].alternatives[0].transcript : "can't specific"
+                    this.messageList.push(word)
+                    sdk.analyze(word).then((e) => {
+                      if (!e.action) {
+                        let hash = ['Sorry, please speak again', 'Pardon?', 'Can\'t specific your word', 'Could your mind speaking again']
+                        this.messageList.push(hash[Math.ceil(Math.random() * 4) - 1])
+                        return
+                      }
+                      else {
+                        ipcRenderer.send(e.action, {
+                          path: this.curDirObj.path,
+                          message: 'commit file',
+                          url: this.curDirObj.url
+                        })
+                      }
+                    });
+
+                  });
+                };
                 this.audioObj = playRecord()
+                this.isRecord = false
+                fileReader.readAsArrayBuffer(this.audioObj)
             });
           }
           
