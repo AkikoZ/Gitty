@@ -88,6 +88,7 @@
         },
         cloneRepos(index) {
           let data = this.remoteRepos[index]
+          this.messageList.push('git clone ' + data.full_name)
           ipcRenderer.send('clone', data)
         },
         recordAudio() {
@@ -105,8 +106,37 @@
         }
       },
       created() {
+        ipcRenderer.on('clone-success', (evt, otherData) => {
+            this.messageList.push('clone succeeded!')
+        })
+        ipcRenderer.on('clone-fail', (evt, otherData) => {
+            this.messageList.push('clone failed!')
+        })
+        ipcRenderer.on('fetch-success', (evt, otherData) => {
+            this.messageList.push('fetch success!')
+        })
+        ipcRenderer.on('fetch-fail', (evt, otherData) => {
+            this.messageList.push('fetch success!')
+        })
+        ipcRenderer.on('pull-success', (evt, otherData) => {
+            this.messageList.push('pull success!')
+        })
+        ipcRenderer.on('pull-fail', (evt, otherData) => {
+            this.messageList.push('pull success!')
+        })
+        ipcRenderer.on('push-success', (evt, otherData) => {
+            this.messageList.push('push success!')
+        })
+        ipcRenderer.on('push-fail', (evt, otherData) => {
+            this.messageList.push('push success!')
+        })
+        ipcRenderer.on('commit-success', (evt, otherData) => {
+            this.messageList.push('commit success!')
+        })
+        ipcRenderer.on('commit-fail', (evt, otherData) => {
+            this.messageList.push('commit success!')
+        })
         ipcRenderer.on('selected-local', (evt, otherData) => {
-            // TODO
             this.currentRepos.push({
               name: otherData.name,
               path: otherData.path
