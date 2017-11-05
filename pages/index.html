@@ -26,7 +26,7 @@
   </style>
   <body>
   <section class="section" id="app" v-cloak>
-    <div class="container icon-title animated pulse">
+    <div :class="['container', 'icon-title', 'animated', isFlag ? 'pulse' : '']">
       <img src="../assets/img/octoface.svg" width="200" height="200" v-on:click="recordAudio">
     </div>
     <div class="right-text">{{username}}</div>
@@ -76,6 +76,7 @@
     const GET_REPOS = 'https://api.github.com/users/'
     let sdk = new SpeechSDK()
     let fileReader = new FileReader()
+    let timer
 
     // fileReader.onload = function() {
     //   fs.writeFileSync('test.wav', Buffer.from(new Uint8Array(this.result)));
@@ -92,7 +93,9 @@
         audioObj: {},
         curDirIndex: -1,
         curDirObj: {},
-        showAllRemotes: false
+        showAllRemotes: false,
+        isFlag: true,
+        curWav: 0
       },
       methods: {
         addFromLocal() {
@@ -114,9 +117,11 @@
           if (!this.isRecord) {
             startRecord(false)
             this.isRecord = true
+            timer = setInterval(() => { this.isFlag = !this.isFlag }, 400)
           }
           else {
             stopRecord(() => {
+                clearInterval(timer)
                 // 播放
                 fileReader.onloadend = (e) => {
                   let data = Buffer.from(fileReader.result)
@@ -133,7 +138,15 @@
                     sdk.analyze(word).then((e) => {
                       if (!e.action) {
                         let hash = ['Sorry, please speak again', 'Pardon?', 'Can\'t specific your word', 'Could your mind speaking again']
-                        this.messageList.push(hash[Math.ceil(Math.random() * 4) - 1])
+                        let curWord = hash[Math.ceil(Math.random() * 4) - 1]
+                        this.messageList.push(curWord)
+                        sdk.synthesize(curWord).then((e) => {
+                          fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
+                            let audioPlayer = new Audio('../write' + this.curWav + '.wav')
+                            this.curWav++
+                            audioPlayer.autoplay = true
+                          })
+                        })
                         return
                       }
                       else {
@@ -157,27 +170,83 @@
       },
       created() {
         ipcRenderer.on('clone-success', (evt, otherData) => {
+            sdk.synthesize('clone succeeded').then((e) => {
+              fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
+                let audioPlayer = new Audio('../write' + this.curWav + '.wav')
+                this.curWav++
+                audioPlayer.autoplay = true
+              })
+            })
             this.messageList.push('clone succeeded!')
         })
         ipcRenderer.on('clone-fail', (evt, otherData) => {
+            sdk.synthesize('clone failed').then((e) => {
+              fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
+                let audioPlayer = new Audio('../write' + this.curWav + '.wav')
+                this.curWav++
+                audioPlayer.autoplay = true
+              })
+            })
             this.messageList.push('clone failed!')
         })
         ipcRenderer.on('pull-success', (evt, otherData) => {
+            sdk.synthesize('pull succeeded').then((e) => {
+              fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
+                let audioPlayer = new Audio('../write' + this.curWav + '.wav')
+                this.curWav++
+                audioPlayer.autoplay = true
+              })
+            })
             this.messageList.push('pull succeeded!')
         })
         ipcRenderer.on('pull-fail', (evt, otherData) => {
+            sdk.synthesize('pull failed').then((e) => {
+              fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
+                let audioPlayer = new Audio('../write' + this.curWav + '.wav')
+                this.curWav++
+                audioPlayer.autoplay = true
+              })
+            })
             this.messageList.push('pull failed!')
         })
         ipcRenderer.on('push-success', (evt, otherData) => {
+            sdk.synthesize('push succeeded').then((e) => {
+              fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
+                let audioPlayer = new Audio('../write' + this.curWav + '.wav')
+                this.curWav++
+                audioPlayer.autoplay = true
+              })
+            })
             this.messageList.push('push succeeded!')
         })
         ipcRenderer.on('push-fail', (evt, otherData) => {
+            sdk.synthesize('push failed').then((e) => {
+              fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
+                let audioPlayer = new Audio('../write' + this.curWav + '.wav')
+                this.curWav++
+                audioPlayer.autoplay = true
+              })
+            })
             this.messageList.push('push failed!')
         })
         ipcRenderer.on('commit-success', (evt, otherData) => {
+            sdk.synthesize('commit succeeded').then((e) => {
+              fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
+                let audioPlayer = new Audio('../write' + this.curWav + '.wav')
+                this.curWav++
+                audioPlayer.autoplay = true
+              })
+            })
             this.messageList.push('commit succeeded!')
         })
         ipcRenderer.on('commit-fail', (evt, otherData) => {
+            sdk.synthesize('commit failed').then((e) => {
+              fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
+                let audioPlayer = new Audio('../write' + this.curWav + '.wav')
+                this.curWav++
+                audioPlayer.autoplay = true
+              })
+            })
             this.messageList.push('commit failed!')
         })
         ipcRenderer.on('selected-local', (evt, otherData) => {
