@@ -137,16 +137,16 @@
                     this.messageList.push(word)
                     sdk.analyze(word).then((e) => {
                       if (!e.action) {
-                        let hash = ['Sorry, please speak again', 'Pardon?', 'Can\'t specific your word', 'Could your mind speaking again']
-                        let curWord = hash[Math.ceil(Math.random() * 4) - 1]
-                        this.messageList.push(curWord)
-                        sdk.synthesize(curWord).then((e) => {
+                        sdk.message(word).then((res) => {
+                          this.messageList.push(res.output.text[0]);
+                          return sdk.synthesize(res.output.text[0]);
+                        }).then((e)=>{
                           fs.writeFile('./write' + this.curWav + '.wav', e, (err) => {
                             let audioPlayer = new Audio('../write' + this.curWav + '.wav')
                             this.curWav++
                             audioPlayer.autoplay = true
                           })
-                        })
+                        });
                         return
                       }
                       else {
