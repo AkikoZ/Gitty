@@ -2,7 +2,7 @@
   "name": "gitty",
   "productName": "Gitty",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple Git voice assistant.",
   "license": "MIT",
   "repository": {
     "type": "git",
